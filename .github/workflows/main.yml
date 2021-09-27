@@ -1,0 +1,51 @@
+name: Build And Deploy
+​
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+​
+env:
+  CDK_DIRECTORY: "infra/src"
+​
+jobs:
+  build_and_deploy:
+    runs-on: ubuntu-latest
+​
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v2
+      - name: Setup Node
+        uses: actions/setup-node@v1
+        with:
+          node-version: "14.x"
+      - name: Install AWS CDK
+        run: |
+          npm install -g aws-cdk
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: us-east-2
+      - name: Install Project Dependencies
+        run: |
+          npm ci
+        working-directory: ${{ env.CDK_DIRECTORY }}
+      - name: Run CDK Synth
+        run: |
+          cdk synth
+        working-directory: ${{ env.CDK_DIRECTORY }}
+      - name: Run CDK Bootstrap
+        if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' }}
+        run: |
+          cdk bootstrap
+        working-directory: ${{ env.CDK_DIRECTORY }}
+      - name: Run CDK Deploy
+        if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' }}
+        run: |
+          cdk deploy --all --require-approval never
+        working-directory: ${{ env.CDK_DIRECTORY }}
