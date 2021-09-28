@@ -35,6 +35,10 @@ jobs:
         run: |
           npm install -g @aws-cdk/aws-dynamodb
         working-directory: ${{ env.CDK_DIRECTORY }}
+      - name: Install Project Dependencies
+        run: |
+          npm ci
+        working-directory: ${{ env.CDK_DIRECTORY }}
       - name: Run CDK Synth
         run: |
           cdk synth
