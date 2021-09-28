@@ -31,14 +31,6 @@ jobs:
         run: |
           npm ci
         working-directory: ${{ env.CDK_DIRECTORY }}
-      - name: Install Project Dependency API Gateway
-        run: |
-          npm install -g @aws-cdk/aws-apigateway
-        working-directory: ${{ env.CDK_DIRECTORY }}
-      - name: Install Project Dependency DynamoDB
-        run: |
-          npm install -g @aws-cdk/aws-dynamodb
-        working-directory: ${{ env.CDK_DIRECTORY }}
       - name: Run CDK Synth
         run: |
           cdk synth
