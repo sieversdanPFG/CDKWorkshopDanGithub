@@ -27,6 +27,10 @@ jobs:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: us-east-2
+      - name: Install Project Dependencies
+        run: |
+          npm ci
+        working-directory: ${{ env.CDK_DIRECTORY }}
       - name: Install Project Dependency API Gateway
         run: |
           npm install -g @aws-cdk/aws-apigateway
@@ -34,10 +38,6 @@ jobs:
       - name: Install Project Dependency DynamoDB
         run: |
           npm install -g @aws-cdk/aws-dynamodb
-        working-directory: ${{ env.CDK_DIRECTORY }}
-      - name: Install Project Dependencies
-        run: |
-          npm ci
         working-directory: ${{ env.CDK_DIRECTORY }}
       - name: Run CDK Synth
         run: |
